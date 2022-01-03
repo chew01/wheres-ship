@@ -9,6 +9,21 @@ const fadeIn = keyframes`
 }
 `;
 
+const errorFadeInAndOut = keyframes`
+0% {
+  opacity: 0%
+}
+10% {
+  opacity: 95%
+}
+90% {
+  opacity: 95%
+}
+100% {
+  opacity: 0%
+}
+`;
+
 const Frame = styled.div`
   display: flex;
   justify-content: center;
@@ -100,6 +115,31 @@ const ConfirmButton = styled.button`
   }
 `;
 
+const Circle = styled.div`
+  position: absolute;
+  border: 5px solid lime;
+  border-radius: 50%;
+  box-sizing: border-box;
+  width: 40px;
+  height: 40px;
+  top: ${(props) => props.top}px;
+  left: ${(props) => props.left}px;
+`;
+
+const ErrorMessage = styled.div`
+  position: absolute;
+  background-color: #f99696;
+  top: 2vh;
+  width: 90vh;
+  height: 5vh;
+  padding: 1.5vh;
+  box-sizing: border-box;
+  color: white;
+  font-size: 2vh;
+  border-radius: 1vh;
+  animation: ${errorFadeInAndOut} 8s;
+`;
+
 export {
   Frame,
   GameImage,
@@ -111,4 +151,6 @@ export {
   PopUpRow,
   PopUpConfirm,
   ConfirmButton,
+  Circle,
+  ErrorMessage,
 };

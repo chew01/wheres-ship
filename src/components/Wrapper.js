@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import Ships from './../assets/ships.png';
-import { Frame, GameImage } from './Game.styled';
+import { Frame, GameImage, Circle, ErrorMessage } from './Game.styled';
 import SelectorCluster from './Selector';
 import queryForShipCoordinates from '../firebase.query';
 
-const Wrapper = () => {
+const Wrapper = (props) => {
+  const { setGameState } = props;
   const [shipsToFind, setShipsToFind] = useState([
     'Hiryuu',
     'Souryuu',
     'Nagato',
     'Mutsu',
     'Musashi',
-    'Yamato',
   ]);
+  const [shipsFound, setShipsFound] = useState([]);
 
   const [selectionExist, setSelectionExist] = useState(false);
   const [selectedCoords, setSelectedCoords] = useState([0, 0]);
@@ -21,7 +22,9 @@ const Wrapper = () => {
   const [queryShip, setQueryShip] = useState('');
   const [queryCoords, setQueryCoords] = useState([0, 0]);
 
-  //after click, selectedcoords is changed, and then selector cluster is rendered
+  const [hasError, setHasError] = useState(false);
+  const [errorType, setErrorType] = useState('');
+
   const handleClick = (e) => {
     if (selectionExist) {
       setSelectionExist(false);
@@ -55,15 +58,25 @@ const Wrapper = () => {
     }
   };
 
-  //after select button is clicked, queryship is changed, and then selector cluster is unrendered
   const selectShip = (ship) => {
     setQueryShip(ship);
     setSelectionExist(false);
   };
 
-  //render occurs when page loads, or selector cluster is opened/closed (element change)
-  //we need something that occurs after element change, specifically something that occurs after selector is closed
+  const indicateFound = shipsFound.map((coords) => {
+    return <Indicator key={coords[0]} coords={coords}></Indicator>;
+  });
 
+  const indicateError = (msg) => {
+    setErrorType(msg);
+    setHasError(true);
+    setTimeout(() => {
+      setErrorType('');
+      setHasError(false);
+    }, 7900);
+  };
+
+  // validation
   useEffect(() => {
     if (queryShip === '') return;
 
@@ -71,17 +84,27 @@ const Wrapper = () => {
       const validation = await queryForShipCoordinates(obj);
       if (validation) {
         setShipsToFind(shipsToFind.filter((item) => item !== validation));
-      } else throw new Error('Wrong guess!');
+        setShipsFound(shipsFound.concat([selectedCoords]));
+      } else indicateError('Wrong location!');
     };
 
     const queryObject = { queryShip, queryCoords };
     validateShip(queryObject);
     setQueryShip('');
-  }, [queryShip, queryCoords, shipsToFind]);
+  }, [queryShip, queryCoords, shipsToFind, shipsFound, selectedCoords]);
+
+  // game over condition
+  useEffect(() => {
+    if (shipsToFind.length === 0) {
+      setGameState('score');
+    }
+  }, [shipsToFind, setGameState]);
 
   return (
     <Frame>
       <GameImage src={Ships} onClick={handleClick} alt="Game" />
+      {indicateFound}
+      {hasError ? <Error type={errorType} /> : null}
       {selectionExist ? (
         <SelectorCluster
           coords={selectedCoords}
@@ -92,6 +115,20 @@ const Wrapper = () => {
       ) : null}
     </Frame>
   );
+};
+
+const Indicator = (props) => {
+  const { coords } = props;
+  const x = coords[0] - 24;
+  const y = coords[1] - 24;
+
+  return <Circle top={y} left={x} />;
+};
+
+const Error = (props) => {
+  const { type } = props;
+
+  return <ErrorMessage>{type}</ErrorMessage>;
 };
 
 export default Wrapper;

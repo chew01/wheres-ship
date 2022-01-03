@@ -35,7 +35,7 @@ const PopUp = (props) => {
 
   const handleSubmit = () => {
     if (!selectedShip) {
-      throw new Error('No ship was selected!');
+      return;
     }
     props.selectShip(selectedShip);
   };
