@@ -40,8 +40,8 @@ const PopUp = (props) => {
     props.selectShip(selectedShip);
   };
 
-  const array = ['Hiryuu', 'Souryuu', 'Nagato', 'Mutsu', 'Musashi', 'Yamato'];
-  const rows = array.map((ship) => {
+  const { shipsToFind } = props;
+  const rows = shipsToFind.map((ship) => {
     return (
       <PopUpRow
         key={ship}
@@ -78,6 +78,7 @@ const SelectorCluster = (props) => {
         coords={props.coords}
         quadrant={props.quadrant}
         selectShip={props.selectShip}
+        shipsToFind={props.shipsToFind}
       />
     </Cluster>
   );

@@ -2,14 +2,26 @@ import React, { useEffect, useState } from 'react';
 import Ships from './../assets/ships.png';
 import { Frame, GameImage } from './Game.styled';
 import SelectorCluster from './Selector';
+import queryForShipCoordinates from '../firebase.query';
 
 const Wrapper = () => {
+  const [shipsToFind, setShipsToFind] = useState([
+    'Hiryuu',
+    'Souryuu',
+    'Nagato',
+    'Mutsu',
+    'Musashi',
+    'Yamato',
+  ]);
+
   const [selectionExist, setSelectionExist] = useState(false);
   const [selectedCoords, setSelectedCoords] = useState([0, 0]);
   const [selectedQuadrant, setSelectedQuadrant] = useState('bottom-right');
+
   const [queryShip, setQueryShip] = useState('');
   const [queryCoords, setQueryCoords] = useState([0, 0]);
 
+  //after click, selectedcoords is changed, and then selector cluster is rendered
   const handleClick = (e) => {
     if (selectionExist) {
       setSelectionExist(false);
@@ -43,15 +55,29 @@ const Wrapper = () => {
     }
   };
 
+  //after select button is clicked, queryship is changed, and then selector cluster is unrendered
   const selectShip = (ship) => {
     setQueryShip(ship);
     setSelectionExist(false);
   };
 
+  //render occurs when page loads, or selector cluster is opened/closed (element change)
+  //we need something that occurs after element change, specifically something that occurs after selector is closed
+
   useEffect(() => {
+    if (queryShip === '') return;
+
+    const validateShip = async (obj) => {
+      const validation = await queryForShipCoordinates(obj);
+      if (validation) {
+        setShipsToFind(shipsToFind.filter((item) => item !== validation));
+      } else throw new Error('Wrong guess!');
+    };
+
     const queryObject = { queryShip, queryCoords };
-    console.log(queryObject);
-  }, [queryCoords, queryShip]);
+    validateShip(queryObject);
+    setQueryShip('');
+  }, [queryShip, queryCoords, shipsToFind]);
 
   return (
     <Frame>
@@ -61,6 +87,7 @@ const Wrapper = () => {
           coords={selectedCoords}
           quadrant={selectedQuadrant}
           selectShip={selectShip}
+          shipsToFind={shipsToFind}
         />
       ) : null}
     </Frame>
