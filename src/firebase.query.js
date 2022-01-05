@@ -9,6 +9,8 @@ import {
   updateDoc,
   doc,
   getDoc,
+  orderBy,
+  limit,
 } from 'firebase/firestore';
 
 const shipRef = collection(db, 'ship-coordinates');
@@ -48,7 +50,6 @@ const queryForRandomShips = async (count) => {
 
 const startTime = async () => {
   const newUser = await addDoc(userRef, {
-    username: '',
     startTime: Timestamp.now(),
   });
   return newUser.id;
@@ -77,6 +78,24 @@ const setName = async (uid, name) => {
   });
 };
 
+const findTopTenFastest = async () => {
+  const topTen = [];
+  const q = query(
+    userRef,
+    orderBy('timeTaken'),
+    orderBy('username'),
+    limit(10)
+  );
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    const name = doc.data().username;
+    const timing = doc.data().timeTaken;
+    const entry = { name, timing };
+    topTen.push(entry);
+  });
+  return topTen;
+};
+
 export {
   queryForShipCoordinates,
   queryForRandomShips,
@@ -84,4 +103,5 @@ export {
   endTime,
   getTimeInSeconds,
   setName,
+  findTopTenFastest,
 };

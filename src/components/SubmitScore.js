@@ -32,7 +32,9 @@ const SubmitScore = (props) => {
         <InputName>
           <Prompt>Enter a nickname!</Prompt>
           <Name type="text" value={input} onChange={handleInput} />
-          <Submit onClick={submitScore}>Submit</Submit>
+          <Submit required onClick={submitScore}>
+            Submit
+          </Submit>
         </InputName>
       </Form>
     </Background>

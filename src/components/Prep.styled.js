@@ -84,7 +84,7 @@ const Showhand = styled.div`
   color: white;
   border: 2px solid white;
   display: grid;
-  grid-template: 40vh 10vh / repeat(5, 15vw);
+  grid-template: 50vh 10vh / repeat(5, 15vw);
   background-color: darkslategrey;
   animation: ${fadeIn} 1s;
 `;
@@ -94,13 +94,14 @@ const CardContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 10px;
   font-size: 4vh;
+  height: 50vh;
+  width: 15vw;
 `;
 
 const Card = styled.img`
   opacity: 90%;
-  width: 100%;
+  max-width: 80%;
 
   &:hover {
     opacity: 100%;
