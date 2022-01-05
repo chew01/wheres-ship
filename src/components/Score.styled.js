@@ -27,6 +27,7 @@ const Form = styled.div`
   flex-direction: column;
   align-items: center;
   animation: ${fadeIn} 1s;
+  background-color: darkslategray;
 `;
 
 const Title = styled.div`
@@ -36,7 +37,6 @@ const Title = styled.div`
   justify-content: center;
   align-items: center;
   font-size: 5vh;
-  background-color: darkslategray;
 `;
 
 const Time = styled.div`
@@ -46,7 +46,6 @@ const Time = styled.div`
   justify-content: center;
   align-items: center;
   font-size: 10vh;
-  background-color: darkslategray;
 `;
 
 const Comment = styled.div`
@@ -56,7 +55,6 @@ const Comment = styled.div`
   justify-content: center;
   align-items: center;
   font-size: 2.5vh;
-  background-color: darkslategray;
 `;
 
 const Prompt = styled.div`
@@ -66,7 +64,6 @@ const Prompt = styled.div`
   justify-content: center;
   align-items: center;
   font-size: 2.5vh;
-  background-color: darkslategray;
 `;
 
 const InputName = styled.div`
@@ -76,7 +73,6 @@ const InputName = styled.div`
   justify-content: center;
   align-items: center;
   font-size: 2.5vh;
-  background-color: darkslategray;
   flex: 1;
   gap: 2vh;
   flex-direction: column;

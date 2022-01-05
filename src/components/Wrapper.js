@@ -2,17 +2,10 @@ import React, { useEffect, useState } from 'react';
 import Ships from './../assets/ships.png';
 import { Frame, GameImage, Circle, ErrorMessage } from './Game.styled';
 import SelectorCluster from './Selector';
-import queryForShipCoordinates from '../firebase.query';
+import { queryForShipCoordinates } from '../firebase.query';
 
 const Wrapper = (props) => {
-  const { setGameState } = props;
-  const [shipsToFind, setShipsToFind] = useState([
-    'Hiryuu',
-    'Souryuu',
-    'Nagato',
-    'Mutsu',
-    'Musashi',
-  ]);
+  const { gameCompleteHandler, shipsToFind, setShipsToFind } = props;
   const [shipsFound, setShipsFound] = useState([]);
 
   const [selectionExist, setSelectionExist] = useState(false);
@@ -73,7 +66,7 @@ const Wrapper = (props) => {
     setTimeout(() => {
       setErrorType('');
       setHasError(false);
-    }, 7900);
+    }, 4900);
   };
 
   // validation
@@ -91,14 +84,21 @@ const Wrapper = (props) => {
     const queryObject = { queryShip, queryCoords };
     validateShip(queryObject);
     setQueryShip('');
-  }, [queryShip, queryCoords, shipsToFind, shipsFound, selectedCoords]);
+  }, [
+    queryShip,
+    queryCoords,
+    shipsToFind,
+    setShipsToFind,
+    shipsFound,
+    selectedCoords,
+  ]);
 
   // game over condition
   useEffect(() => {
     if (shipsToFind.length === 0) {
-      setGameState('score');
+      gameCompleteHandler();
     }
-  }, [shipsToFind, setGameState]);
+  }, [shipsToFind, gameCompleteHandler]);
 
   return (
     <Frame>

@@ -137,7 +137,7 @@ const ErrorMessage = styled.div`
   color: white;
   font-size: 2vh;
   border-radius: 1vh;
-  animation: ${errorFadeInAndOut} 8s;
+  animation: ${errorFadeInAndOut} 5s;
 `;
 
 export {

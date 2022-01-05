@@ -1,7 +1,18 @@
 import db from './firebase.config';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  addDoc,
+  Timestamp,
+  updateDoc,
+  doc,
+  getDoc,
+} from 'firebase/firestore';
 
 const shipRef = collection(db, 'ship-coordinates');
+const userRef = collection(db, 'users');
 
 const queryForShipCoordinates = async (queryObject) => {
   const q = query(shipRef, where('name', '==', queryObject.queryShip));
@@ -19,4 +30,58 @@ const queryForShipCoordinates = async (queryObject) => {
   return null;
 };
 
-export default queryForShipCoordinates;
+const queryForRandomShips = async (count) => {
+  const randomNumbers = [];
+  while (randomNumbers.length < count) {
+    const randomNumber = Math.floor(Math.random() * 10);
+    if (!randomNumbers.includes(randomNumber)) {
+      randomNumbers.push(randomNumber);
+    }
+  }
+
+  const result = [];
+  const q = query(shipRef, where('index', 'in', randomNumbers));
+  const querySnapshot = await getDocs(q);
+  querySnapshot.docs.forEach((doc) => result.push(doc.data().name));
+  return result;
+};
+
+const startTime = async () => {
+  const newUser = await addDoc(userRef, {
+    username: '',
+    startTime: Timestamp.now(),
+  });
+  return newUser.id;
+};
+
+const endTime = async (uid) => {
+  await updateDoc(doc(db, 'users', uid), {
+    endTime: Timestamp.now(),
+  });
+};
+
+const getTimeInSeconds = async (uid) => {
+  const userData = await getDoc(doc(db, 'users', uid));
+  const startTimeInSeconds = userData.data().startTime.seconds;
+  const endTimeInSeconds = userData.data().endTime.seconds;
+  const timeTakenInSeconds = endTimeInSeconds - startTimeInSeconds;
+  await updateDoc(doc(db, 'users', uid), {
+    timeTaken: timeTakenInSeconds,
+  });
+  return timeTakenInSeconds;
+};
+
+const setName = async (uid, name) => {
+  await updateDoc(doc(db, 'users', uid), {
+    username: name,
+  });
+};
+
+export {
+  queryForShipCoordinates,
+  queryForRandomShips,
+  startTime,
+  endTime,
+  getTimeInSeconds,
+  setName,
+};
