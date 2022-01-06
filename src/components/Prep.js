@@ -114,7 +114,7 @@ const ReadyScreen = (props) => {
   return (
     <Showhand>
       {shipImages}
-      <Begin onClick={handleGameBegin}>Let's Go!</Begin>
+      <Begin onClick={handleGameBegin}>Anchor Weigh!</Begin>
     </Showhand>
   );
 };
